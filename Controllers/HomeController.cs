@@ -110,6 +110,13 @@ namespace Seating.Controllers
             return View(db);
         }
 
+
+        //public JsonResult GetDropDownsPartial()
+        //{
+
+
+        //}
+
         [System.Web.Http.HttpPost]
         public ActionResult CreateData(Break breaks)
         {

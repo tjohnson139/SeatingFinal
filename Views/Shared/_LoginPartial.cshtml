@@ -1,10 +1,9 @@
 ﻿@using Microsoft.AspNet.Identity
-{
-    @Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" })
-    @Html.AntiForgeryToken()
 
-    <li class="nav-item has-treeview">
+    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
         <div class="nav-link">
             <a href="javascript:document.getElementById('logoutForm').submit()">&thinsp;Log off</a>
         </div>
-    </li>
+    }

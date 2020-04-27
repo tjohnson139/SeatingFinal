@@ -53,6 +53,7 @@ namespace Seating.Controllers
         {
             if (ModelState.IsValid)
             {
+                employee.ScheduleID = 1;
                 db.Employees.Add(employee);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -87,6 +88,7 @@ namespace Seating.Controllers
         {
             if (ModelState.IsValid)
             {
+                employee.ScheduleID = 1;
                 db.Entry(employee).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -116,7 +118,7 @@ namespace Seating.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Employee employee = db.Employees.Find(id);
-            db.Employees.Remove(employee);
+            employee.NotActive = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
