@@ -1,0 +1,476 @@
+﻿@model Seating.Models.ApplicationDbContext
+
+@{
+    Layout = null;
+    var employee = new List<Seating.Models.Employee>();
+    employee = (List<Seating.Models.Employee>)ViewBag.EmployeesNames;
+    var positionNames = new List<Seating.Models.Position>();
+    positionNames = (List<Seating.Models.Position>)ViewBag.PositionNames;
+    var scheduleTimes = new List<Seating.Models.Schedule>();
+    scheduleTimes = (List<Seating.Models.Schedule>)ViewBag.ScheduleTimes;
+    var modelOrdered = Model.Lunches.OrderBy(m => m.LunchTime);
+    var positionOrdered = Model.Positions.OrderBy(m => m.PositionName);
+}
+
+@Html.Partial("_Header")
+
+<div class="card" id="Dropdowns" style="width: 10.5em; margin-left: .5em; position:absolute">
+    <div class="card-body" id="refresh-card" style="margin-right:1em; margin-left:-.5em">
+        <h5 class="card-title" style="text-align:center">DTH</h5>
+        <table class="table-bordered" style="width:8em;">
+            @*populate the table with only those breaks that lack a TimeCleared value*@
+            @if (Model.Dths != null)
+            {
+                foreach (var item in Model.Dths)
+                {
+                    if (item.TimeCleared == null)
+                    {
+                        if (item.TimeEntered.AddMinutes(1) > DateTime.Now)
+                        {
+                            <tr>
+                                @*Make each name clickable to set a TimeCleared datetime.Now time*@
+                                <td class="listTime">
+                                    <input type="hidden" class="hiddenDthID" value="@item.DthID" />
+                                    <a href="Javascript:;" class="empNameDth" style="color:black">@item.Employee.DisplayName</a>
+                                </td>
+                                <td class="listTime" style="width:2.5em">
+                                    @item.Position.PositionName
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                @*Make each name clickable to set a TimeCleared datetime.Now time*@
+                                <td class="DthIdNumber">
+                                    <input type="hidden" class="hiddenDthID" value="@item.DthID" />
+                                    <a href="Javascript:;" class="empNameDth" style="color:black">@item.Employee.DisplayName</a>
+                                </td>
+                                <td class="DthIdNumber" style="width:2.5em">
+                                    @item.Position.PositionName
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </table>
+        <div class="form formBuffer" style="text-align:center">
+            <div class="col-med-6">
+                <select class="index-dropdown" id="dthemployeeId">
+                    <option value="" selected>-- Dispatcher --</option>
+                    @foreach (var employeeName in employee)
+                    {
+                        <option value="@employeeName.EmployeeID">@employeeName.DisplayName</option>
+                    }
+                </select>
+                <select class="index-dropdown" id="dthpositionId" style="margin-top: .5em">
+                    <option value="" selected>-- Position --</option>
+                    @foreach (var positionName in positionOrdered)
+                    {
+                        <option value="@positionName.PositionID">@positionName.PositionName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-med-12 formBuffer">
+                <button id="Dthsubmit-form" class="btn btn-secondary btn-sm">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*start the break list table*@
+<div class="card" style="width: 10.5em; display: inline-block; margin-left: 10em;position: absolute">
+    <div class="card-body">
+        <h5 class="card-title" style="text-align:center">Break</h5>
+        <table class="table-bordered" style="width:8em">
+            @*populate the table with only those breaks that lack a TimeCleared value*@
+            @if (Model.Breaks != null)
+            {
+                foreach (var item in Model.Breaks)
+                {
+                    if (item.TimeCleared == null)
+                    {
+                        if (item.TimeEntered.AddMinutes(1) > DateTime.Now)
+                        {
+                            <tr>
+                                @*Make each name clickable to set a TimeCleared datetime.Now time*@
+                                <td class="listTime">
+                                    <input type="hidden" class="hiddenBreaksID" value="@item.BreakID" />
+                                    <a href="Javascript:;" class="empName" style="color:black">@item.Employee.DisplayName</a>
+                                </td>
+                                <td class="listTime" style="width:2.5em;">
+                                    @item.Position.PositionName
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                @*Make each name clickable to set a TimeCleared datetime.Now time*@
+                                <td class="breakIdNumber">
+                                    <input type="hidden" class="hiddenBreaksID" value="@item.BreakID" />
+                                    <a href="Javascript:;" class="empName" style="color:black">@item.Employee.DisplayName</a>
+                                </td>
+                                <td class="breakIdNumber" style="width:2.5em;">
+                                    @item.Position.PositionName
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </table>
+        <div class="form formBuffer" style="text-align:center;">
+            <div class="col-med-6">
+                <select class="index-dropdown" id="employeeId">
+                    <option value="" selected>-- Dispatcher --</option>
+                    @foreach (var employeeName in employee)
+                    {
+                        <option value="@employeeName.EmployeeID">@employeeName.DisplayName</option>
+                    }
+                </select>
+                <select class="index-dropdown" id="positionId" style="margin-top: .5em;">
+                    <option value="" selected>-- Position --</option>
+                    @foreach (var positionName in positionOrdered)
+                    {
+                        <option value="@positionName.PositionID">@positionName.PositionName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-med-12 formBuffer">
+                <button id="submit-form" class="btn btn-secondary btn-sm">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card" style="width: 15em; display:inline-block;margin-left:19.5em;position: absolute;">
+    <div class="card-body">
+        <h5 class="card-title" style="text-align:center">Lunch</h5>
+        <table class="table-bordered" id="table_lunch" style="width:13em;">
+            @*populate the table with only those breaks that lack a TimeCleared value*@
+            @if (Model.Lunches != null)
+            {
+                foreach (var item in modelOrdered)
+                {
+                    if (DateTime.Now < item.LunchTime.AddHours(1))
+                    {
+                        <tr>
+                            @*Make each name clickable - deletes the lunch*@
+                            <td class="LunchIdNumber">
+                                @if (item.LongerLunch == false && item.Double == false)
+                                {
+                                    <input type="hidden" class="hiddenLunchID" value="@item.LunchID" />
+                                    <a href="Javascript:;" class="empNameLunch" style="color:black">@item.Employee.DisplayName</a>
+                                }
+                                @if (item.Double == true && item.LongerLunch == false)
+                                {
+                                    <input type="hidden" class="hiddenLunchID" value="@item.LunchID" />
+                                    <a href="Javascript:;" class="empNameLunch" style="color:black">@item.Employee.DisplayName <div style="font-weight:bold; display:inline-block"> - Dbl</div></a>
+                                }
+                                @if (item.Double == false && item.LongerLunch == true)
+                                {
+                                    <input type="hidden" class="hiddenLunchID" value="@item.LunchID" />
+                                    <a href="Javascript:;" class="empNameLunch" style="color:black">@item.Employee.DisplayName <div style="font-weight:bold; display:inline-block"> - 45</div></a>
+                                }
+                                @if (item.Double == true && item.LongerLunch == true)
+                                {
+                                    <input type="hidden" class="hiddenLunchID" value="@item.LunchID" />
+                                    <a href="Javascript:;" class="empNameLunch" style="color:black">@item.Employee.DisplayName <div style="font-weight:bold; display:inline-block"> - Dbl -45</div></a>
+                                }
+                            </td>
+                            <td class="LunchIdNumber" style="width:3em;">
+                                @item.Position.PositionName
+                            </td>
+                            <td class="LunchIdNumber" style="width:3em;">
+                                @item.LunchTime.ToString("HH:mm")
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </table>
+        <div class="form" style="width:13em; justify-content:center">
+            <a class="btn btn-secondary btn-sm" style="margin-top:1.25em; margin-left:4.5em;" href="/Home/Lunch" role="button">Add Lunch</a>
+        </div>
+    </div>
+</div>
+
+@*<div style="width:118em; height:70em; margin-left:36em" id="siteloader"></div>*@
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+<script>
+    $("#siteloader").html('<object data="https://docs.google.com/spreadsheets/d/1v-ZSkfiv32IjmtTlZWenC9-9epcWokwWuncPB0CSVM8/edit#gid=959361132" />');
+</script>
+
+@*<script type="text/javascript" language="javascript">
+    jQuery(document).ready(function () {
+        function refresh() {
+            setTimeout("jQuery('#Dropdowns').load('#Dropdowns');", 10000);
+        }
+        refresh();
+    });
+</script>*@
+
+<script>
+    $(document).ready(function () {
+        $("#submit-form").click(function () {
+            var model = {};
+            model.EmployeeID = Number($("#employeeId").val());
+            model.PositionID = Number($("#positionId").val());
+            console.log("model", model);
+            $.ajax({
+                type: "HttpPost",
+                url: "/Home/CreateData",
+                dataType: 'json',
+                data: JSON.stringify(model),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.success)
+                        window.location.href = "/Home/Index";
+                    else
+                        alert("Error: Break not submitted");
+                },
+                error: function () {
+                    alert("Error: Break not submitted");
+                }
+            });
+        });
+
+
+
+    });
+</script>
+<script>
+    $(".empName").click(function () {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Remove from the break list?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "Post",
+                    url: "/Home/DeleteBreaks",
+                    dataType: 'json',
+                    data: { "breakID": $(this).closest("tr").find(".hiddenBreaksID").val() },
+                    success: function (data) {
+
+                        if (data == true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Successfully Removed!',
+                                showConfirmButton: false,
+                                timer: 0850,
+
+                            })
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failure!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        }
+                    },
+                    error: function () {
+                        alert("Something went wrong. What is this? Tritech?");
+                    }
+                });
+            }
+        })
+    });
+</script>
+
+@*DTH JQuery*@
+<script>
+    $(document).ready(function () {
+        $("#Dthsubmit-form").click(function () {
+            var model = {};
+            model.EmployeeID = Number($("#dthemployeeId").val());
+            model.PositionID = Number($("#dthpositionId").val());
+            console.log("model", model);
+            $.ajax({
+                type: "HttpPost",
+                url: "/Home/CreateDth",
+                dataType: 'json',
+                data: JSON.stringify(model),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.success)
+                        window.location.href = "/Home/Index";
+                    else
+                        alert("Error: DTH not submitted");
+                },
+                error: function () {
+                    alert("Error: DTH not submitted");
+                }
+            });
+        });
+
+
+
+    });
+</script>
+
+<script>
+    $(".empNameDth").click(function () {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Remove from the DTH list?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "Post",
+                    url: "/Home/DeleteDth",
+                    dataType: 'json',
+                    data: { "dthID": $(this).closest("tr").find(".hiddenDthID").val() },
+                    success: function (data) {
+
+                        if (data == true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Successfully Removed!',
+                                showConfirmButton: false,
+                                timer: 0850,
+
+                            })
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failure!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        }
+                    },
+                    error: function () {
+                        alert("Something went wrong. What is this? Tritech?");
+                    }
+                });
+            }
+        })
+
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#Lunchsubmit-form").click(function () {
+            var model = {};
+            model.EmployeeID = Number($("#lunchemployeeId").val());
+            model.PositionID = Number($("#lunchposition").val());
+            model.LunchTime = String($("#lunchtime").val());
+            model.LongerLunch = $('#lunch45').is(":checked");
+            console.log("model", model);
+            $.ajax({
+                type: "HttpPost",
+                url: "/Home/CreateLunch",
+                dataType: 'json',
+                data: JSON.stringify(model),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.success)
+                        window.location.href = "/Home/Index";
+                    else
+                        alert("Error: Lunch not submitted");
+                },
+                error: function () {
+                    alert("Error: Lunch not submitted");
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(".empNameLunch").click(function () {
+        Swal.fire({
+            title: 'DO NOT DELETE UNLESS CANCELLING',
+            text: "Only delete if you're cancelling your lunch time. DO NOT delete past, current and future lunches.",
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Cancel my lunch'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "Post",
+                    url: "/Home/DeleteLunch",
+                    dataType: 'json',
+                    data: { "lunchID": $(this).closest("tr").find(".hiddenLunchID").val() },
+                    success: function (data) {
+
+                        if (data == true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Successfully Removed!',
+                                showConfirmButton: false,
+                                timer: 2000,
+
+                            })
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failure!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        }
+                    },
+                    error: function () {
+                        alert("Something went wrong. What is this? Tritech?");
+                    }
+                });
+            }
+        })
+
+
+    });
+        //$(document).on("change", '#lunchemployeeId', function () {
+
+        //    if ($(this).val() == "") {
+        //        $("#lunchtime").html("<option selected>--Lunch Time--</option>");
+
+        //    }
+        //    else {
+        //        $.ajax({
+        //            url: '/Home/GetLunchTimeeDDLByEmployee/',
+        //            type: 'POST',
+        //            data: { empID: $(this).val() },
+        //            dataType: 'json',
+        //            success: function (result) {
+
+        //                $("#lunchtime").html(result.lunchTimeDDL);
+
+        //            }
+        //        });
+        //    }
+        //});
+</script>
