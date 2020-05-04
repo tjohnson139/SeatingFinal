@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using Seating.Helper;
 using Seating.Models;
 
 namespace Seating.Controllers
@@ -107,15 +108,117 @@ namespace Seating.Controllers
             ViewBag.PositionNames = db.Positions.ToList();
             ViewBag.ScheduleTimes = db.Schedules.OrderBy(x => x.ScheduleTime).ToList();
             ViewBag.LunchTimes = db.Lunches.OrderBy(x => x.LunchTime).ToList();
-            return View(db);
+            ViewBag.positionOrdered = db.Positions.OrderBy(m => m.PositionName).ToList();
+            ViewBag.Dths = db.Dths.ToList();
+            ViewBag.Breaks = db.Breaks.ToList();
+            ViewBag.Lunches = db.Lunches.ToList();
+
+
+            return View();
         }
 
 
-        //public JsonResult GetDropDownsPartial()
-        //{
+        public JsonResult GetDropDownsPartial()
+        {
+            var breaks = db.Breaks.ToList();
+            foreach (var item in breaks)
+            {
+                Break mdl = new Break();
+                mdl.BreakID = item.BreakID;
+                mdl.Employee = item.Employee;
+                mdl.TimeEntered = item.TimeEntered;
+                mdl.TimeCleared = item.TimeCleared;
+                mdl.PositionID = item.PositionID;
+                if (db.Breaks != null)
+                {
+                    db.Breaks.Add(mdl);
+                }
+                db.Breaks.Add(mdl);
+            }
+            var employee = db.Employees.ToList();
+            foreach (var item in employee)
+            {
+                Employee mdl = new Employee();
+                mdl.EmployeeID = item.EmployeeID;
+                mdl.FirstName = item.FirstName;
+                mdl.LastName = item.LastName;
+                mdl.NotActive = item.NotActive;
+                mdl.Schedule = item.Schedule;
+                mdl.Force = item.Force;
+                mdl.DisplayName = item.DisplayName;
+                if (db.Employees != null)
+                {
+                    db.Employees.Add(mdl);
+                }
+            }
+            var dthmodel = db.Dths.ToList();
+            foreach (var item in dthmodel)
+            {
+                Dth mdl = new Dth();
+                mdl.DthID = item.DthID;
+                mdl.Employee = item.Employee;
+                mdl.TimeCleared = item.TimeCleared;
+                mdl.TimeEntered = item.TimeEntered;
+                mdl.PositionID = item.PositionID;
+                if (db.Dths != null)
+                {
+                    db.Dths.Add(mdl);
+                }
+            }
+            var scheduleModel = db.Schedules.ToList();
+            foreach (var item in scheduleModel)
+            {
+                Schedule mdl = new Schedule();
+                mdl.ScheduleID = item.ScheduleID;
+                mdl.ScheduleTime = item.ScheduleTime;
 
+                if (db.Schedules != null)
+                {
+                    db.Schedules.Add(mdl);
+                }
+            }
 
-        //}
+            var lunchModel = db.Lunches.OrderBy(x => x.LunchTime);
+            foreach (var item in lunchModel)
+            {
+                Lunch mdl = new Lunch();
+                mdl.Employee = item.Employee;
+                mdl.LunchID = item.LunchID;
+                mdl.PositionID = item.PositionID;
+                mdl.LunchTime = item.LunchTime;
+                mdl.LongerLunch = item.LongerLunch;
+                mdl.Double = item.Double;
+                if (db.Lunches != null)
+                {
+                    db.Lunches.Add(mdl);
+                }
+            }
+            var positionModel = db.Positions.ToList();
+            foreach (var item in positionModel)
+            {
+                Position mdl = new Position();
+                mdl.PositionID = item.PositionID;
+                mdl.PositionName = item.PositionName;
+                if (db.Positions != null)
+                {
+                    db.Positions.Add(mdl);
+                }
+            }
+
+            ViewBag.EmployeesNames = db.Employees.Where(x => x.NotActive == false).OrderBy(x => x.DisplayName).ToList();
+            ViewBag.PositionNames = db.Positions.ToList();
+            ViewBag.ScheduleTimes = db.Schedules.OrderBy(x => x.ScheduleTime).ToList();
+            ViewBag.LunchTimes = db.Lunches.OrderBy(x => x.LunchTime).ToList();
+            ViewBag.positionOrdered = db.Positions.OrderBy(m => m.PositionName).ToList();
+            ViewBag.Dths = db.Dths.ToList();
+            ViewBag.Breaks = db.Breaks.ToList();
+            ViewBag.Lunches = db.Lunches.ToList();
+
+            string partialHtml = Common.RenderRazorViewToString(ControllerContext,"~/Views/Home/_DropDowns.cshtml");
+            return Json(new { valid = true, html = partialHtml }, JsonRequestBehavior.AllowGet);
+
+        }
+
 
         [System.Web.Http.HttpPost]
         public ActionResult CreateData(Break breaks)
@@ -125,7 +228,103 @@ namespace Seating.Controllers
                 breaks.TimeEntered = DateTime.Now;
                 db.Breaks.Add(breaks);
                 db.SaveChanges();
-                return Json(new { success = true });
+
+                var breaksList = db.Breaks.ToList();
+                foreach (var item in breaksList)
+                {
+                    Break mdl = new Break();
+                    mdl.BreakID = item.BreakID;
+                    mdl.Employee = item.Employee;
+                    mdl.TimeEntered = item.TimeEntered;
+                    mdl.TimeCleared = item.TimeCleared;
+                    mdl.PositionID = item.PositionID;
+                    if (db.Breaks != null)
+                    {
+                        db.Breaks.Add(mdl);
+                    }
+                    db.Breaks.Add(mdl);
+                }
+                var employee = db.Employees.ToList();
+                foreach (var item in employee)
+                {
+                    Employee mdl = new Employee();
+                    mdl.EmployeeID = item.EmployeeID;
+                    mdl.FirstName = item.FirstName;
+                    mdl.LastName = item.LastName;
+                    mdl.NotActive = item.NotActive;
+                    mdl.Schedule = item.Schedule;
+                    mdl.Force = item.Force;
+                    mdl.DisplayName = item.DisplayName;
+                    if (db.Employees != null)
+                    {
+                        db.Employees.Add(mdl);
+                    }
+                }
+                var dthmodel = db.Dths.ToList();
+                foreach (var item in dthmodel)
+                {
+                    Dth mdl = new Dth();
+                    mdl.DthID = item.DthID;
+                    mdl.Employee = item.Employee;
+                    mdl.TimeCleared = item.TimeCleared;
+                    mdl.TimeEntered = item.TimeEntered;
+                    mdl.PositionID = item.PositionID;
+                    if (db.Dths != null)
+                    {
+                        db.Dths.Add(mdl);
+                    }
+                }
+                var scheduleModel = db.Schedules.ToList();
+                foreach (var item in scheduleModel)
+                {
+                    Schedule mdl = new Schedule();
+                    mdl.ScheduleID = item.ScheduleID;
+                    mdl.ScheduleTime = item.ScheduleTime;
+
+                    if (db.Schedules != null)
+                    {
+                        db.Schedules.Add(mdl);
+                    }
+                }
+
+                var lunchModel = db.Lunches.OrderBy(x => x.LunchTime);
+                foreach (var item in lunchModel)
+                {
+                    Lunch mdl = new Lunch();
+                    mdl.Employee = item.Employee;
+                    mdl.LunchID = item.LunchID;
+                    mdl.PositionID = item.PositionID;
+                    mdl.LunchTime = item.LunchTime;
+                    mdl.LongerLunch = item.LongerLunch;
+                    mdl.Double = item.Double;
+                    if (db.Lunches != null)
+                    {
+                        db.Lunches.Add(mdl);
+                    }
+                }
+                var positionModel = db.Positions.ToList();
+                foreach (var item in positionModel)
+                {
+                    Position mdl = new Position();
+                    mdl.PositionID = item.PositionID;
+                    mdl.PositionName = item.PositionName;
+                    if (db.Positions != null)
+                    {
+                        db.Positions.Add(mdl);
+                    }
+                }
+
+                ViewBag.EmployeesNames = db.Employees.Where(x => x.NotActive == false).OrderBy(x => x.DisplayName).ToList();
+                ViewBag.PositionNames = db.Positions.ToList();
+                ViewBag.ScheduleTimes = db.Schedules.OrderBy(x => x.ScheduleTime).ToList();
+                ViewBag.LunchTimes = db.Lunches.OrderBy(x => x.LunchTime).ToList();
+                ViewBag.positionOrdered = db.Positions.OrderBy(m => m.PositionName).ToList();
+                ViewBag.Dths = db.Dths.ToList();
+                ViewBag.Breaks = db.Breaks.ToList();
+                ViewBag.Lunches = db.Lunches.ToList();
+
+                string partialHtml = Common.RenderRazorViewToString(ControllerContext, "~/Views/Home/_DropDowns.cshtml");
+                return Json(new { success = true, html = partialHtml }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -141,23 +340,214 @@ namespace Seating.Controllers
                 var oldBreaksModel = db.Breaks.Where(x => x.BreakID == breakID).FirstOrDefault();
                 oldBreaksModel.TimeCleared = DateTime.Now;
 
-                return Json(db.SaveChanges() > 0, JsonRequestBehavior.AllowGet);
+                var breaksList = db.Breaks.ToList();
+                foreach (var item in breaksList)
+                {
+                    Break mdl = new Break();
+                    mdl.BreakID = item.BreakID;
+                    mdl.Employee = item.Employee;
+                    mdl.TimeEntered = item.TimeEntered;
+                    mdl.TimeCleared = item.TimeCleared;
+                    mdl.PositionID = item.PositionID;
+                    if (db.Breaks != null)
+                    {
+                        db.Breaks.Add(mdl);
+                    }
+                    db.Breaks.Add(mdl);
+                }
+                var employee = db.Employees.ToList();
+                foreach (var item in employee)
+                {
+                    Employee mdl = new Employee();
+                    mdl.EmployeeID = item.EmployeeID;
+                    mdl.FirstName = item.FirstName;
+                    mdl.LastName = item.LastName;
+                    mdl.NotActive = item.NotActive;
+                    mdl.Schedule = item.Schedule;
+                    mdl.Force = item.Force;
+                    mdl.DisplayName = item.DisplayName;
+                    if (db.Employees != null)
+                    {
+                        db.Employees.Add(mdl);
+                    }
+                }
+                var dthmodel = db.Dths.ToList();
+                foreach (var item in dthmodel)
+                {
+                    Dth mdl = new Dth();
+                    mdl.DthID = item.DthID;
+                    mdl.Employee = item.Employee;
+                    mdl.TimeCleared = item.TimeCleared;
+                    mdl.TimeEntered = item.TimeEntered;
+                    mdl.PositionID = item.PositionID;
+                    if (db.Dths != null)
+                    {
+                        db.Dths.Add(mdl);
+                    }
+                }
+                var scheduleModel = db.Schedules.ToList();
+                foreach (var item in scheduleModel)
+                {
+                    Schedule mdl = new Schedule();
+                    mdl.ScheduleID = item.ScheduleID;
+                    mdl.ScheduleTime = item.ScheduleTime;
+
+                    if (db.Schedules != null)
+                    {
+                        db.Schedules.Add(mdl);
+                    }
+                }
+
+                var lunchModel = db.Lunches.OrderBy(x => x.LunchTime);
+                foreach (var item in lunchModel)
+                {
+                    Lunch mdl = new Lunch();
+                    mdl.Employee = item.Employee;
+                    mdl.LunchID = item.LunchID;
+                    mdl.PositionID = item.PositionID;
+                    mdl.LunchTime = item.LunchTime;
+                    mdl.LongerLunch = item.LongerLunch;
+                    mdl.Double = item.Double;
+                    if (db.Lunches != null)
+                    {
+                        db.Lunches.Add(mdl);
+                    }
+                }
+                var positionModel = db.Positions.ToList();
+                foreach (var item in positionModel)
+                {
+                    Position mdl = new Position();
+                    mdl.PositionID = item.PositionID;
+                    mdl.PositionName = item.PositionName;
+                    if (db.Positions != null)
+                    {
+                        db.Positions.Add(mdl);
+                    }
+                }
+
+                ViewBag.EmployeesNames = db.Employees.Where(x => x.NotActive == false).OrderBy(x => x.DisplayName).ToList();
+                ViewBag.PositionNames = db.Positions.ToList();
+                ViewBag.ScheduleTimes = db.Schedules.OrderBy(x => x.ScheduleTime).ToList();
+                ViewBag.LunchTimes = db.Lunches.OrderBy(x => x.LunchTime).ToList();
+                ViewBag.positionOrdered = db.Positions.OrderBy(m => m.PositionName).ToList();
+                ViewBag.Dths = db.Dths.ToList();
+                ViewBag.Breaks = db.Breaks.ToList();
+                ViewBag.Lunches = db.Lunches.ToList();
+
+                string partialHtml = Common.RenderRazorViewToString(ControllerContext, "~/Views/Home/_DropDowns.cshtml");
+                return Json(new { success = true, html = partialHtml }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Json(false, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false });
             }
         }
 
         [System.Web.Http.HttpPost]
-        public ActionResult CreateDth(Dth dth)
+        public ActionResult CreateDth(Dth dths)
         {
             try
             {
-                dth.TimeEntered = DateTime.Now;
-                db.Dths.Add(dth);
+                dths.TimeEntered = DateTime.Now;
+                db.Dths.Add(dths);
                 db.SaveChanges();
-                return Json(new { success = true });
+
+                var breaksList = db.Breaks.ToList();
+                foreach (var item in breaksList)
+                {
+                    Break mdl = new Break();
+                    mdl.BreakID = item.BreakID;
+                    mdl.Employee = item.Employee;
+                    mdl.TimeEntered = item.TimeEntered;
+                    mdl.TimeCleared = item.TimeCleared;
+                    mdl.PositionID = item.PositionID;
+                    if (db.Breaks != null)
+                    {
+                        db.Breaks.Add(mdl);
+                    }
+                    db.Breaks.Add(mdl);
+                }
+                var employee = db.Employees.ToList();
+                foreach (var item in employee)
+                {
+                    Employee mdl = new Employee();
+                    mdl.EmployeeID = item.EmployeeID;
+                    mdl.FirstName = item.FirstName;
+                    mdl.LastName = item.LastName;
+                    mdl.NotActive = item.NotActive;
+                    mdl.Schedule = item.Schedule;
+                    mdl.Force = item.Force;
+                    mdl.DisplayName = item.DisplayName;
+                    if (db.Employees != null)
+                    {
+                        db.Employees.Add(mdl);
+                    }
+                }
+                var dthmodel = db.Dths.ToList();
+                foreach (var item in dthmodel)
+                {
+                    Dth mdl = new Dth();
+                    mdl.DthID = item.DthID;
+                    mdl.Employee = item.Employee;
+                    mdl.TimeCleared = item.TimeCleared;
+                    mdl.TimeEntered = item.TimeEntered;
+                    mdl.PositionID = item.PositionID;
+                    if (db.Dths != null)
+                    {
+                        db.Dths.Add(mdl);
+                    }
+                }
+                var scheduleModel = db.Schedules.ToList();
+                foreach (var item in scheduleModel)
+                {
+                    Schedule mdl = new Schedule();
+                    mdl.ScheduleID = item.ScheduleID;
+                    mdl.ScheduleTime = item.ScheduleTime;
+
+                    if (db.Schedules != null)
+                    {
+                        db.Schedules.Add(mdl);
+                    }
+                }
+
+                var lunchModel = db.Lunches.OrderBy(x => x.LunchTime);
+                foreach (var item in lunchModel)
+                {
+                    Lunch mdl = new Lunch();
+                    mdl.Employee = item.Employee;
+                    mdl.LunchID = item.LunchID;
+                    mdl.PositionID = item.PositionID;
+                    mdl.LunchTime = item.LunchTime;
+                    mdl.LongerLunch = item.LongerLunch;
+                    mdl.Double = item.Double;
+                    if (db.Lunches != null)
+                    {
+                        db.Lunches.Add(mdl);
+                    }
+                }
+                var positionModel = db.Positions.ToList();
+                foreach (var item in positionModel)
+                {
+                    Position mdl = new Position();
+                    mdl.PositionID = item.PositionID;
+                    mdl.PositionName = item.PositionName;
+                    if (db.Positions != null)
+                    {
+                        db.Positions.Add(mdl);
+                    }
+                }
+
+                ViewBag.EmployeesNames = db.Employees.Where(x => x.NotActive == false).OrderBy(x => x.DisplayName).ToList();
+                ViewBag.PositionNames = db.Positions.ToList();
+                ViewBag.ScheduleTimes = db.Schedules.OrderBy(x => x.ScheduleTime).ToList();
+                ViewBag.LunchTimes = db.Lunches.OrderBy(x => x.LunchTime).ToList();
+                ViewBag.positionOrdered = db.Positions.OrderBy(m => m.PositionName).ToList();
+                ViewBag.Dths = db.Dths.ToList();
+                ViewBag.Breaks = db.Breaks.ToList();
+                ViewBag.Lunches = db.Lunches.ToList();
+
+                string partialHtml = Common.RenderRazorViewToString(ControllerContext, "~/Views/Home/_DropDowns.cshtml");
+                return Json(new { success = true, html = partialHtml }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -180,11 +570,106 @@ namespace Seating.Controllers
                 var oldDthModel = db.Dths.Where(x => x.DthID == dthID).FirstOrDefault();
                 oldDthModel.TimeCleared = DateTime.Now;
 
-                return Json(db.SaveChanges() > 0, JsonRequestBehavior.AllowGet);
+                var breaksList = db.Breaks.ToList();
+                foreach (var item in breaksList)
+                {
+                    Break mdl = new Break();
+                    mdl.BreakID = item.BreakID;
+                    mdl.Employee = item.Employee;
+                    mdl.TimeEntered = item.TimeEntered;
+                    mdl.TimeCleared = item.TimeCleared;
+                    mdl.PositionID = item.PositionID;
+                    if (db.Breaks != null)
+                    {
+                        db.Breaks.Add(mdl);
+                    }
+                    db.Breaks.Add(mdl);
+                }
+                var employee = db.Employees.ToList();
+                foreach (var item in employee)
+                {
+                    Employee mdl = new Employee();
+                    mdl.EmployeeID = item.EmployeeID;
+                    mdl.FirstName = item.FirstName;
+                    mdl.LastName = item.LastName;
+                    mdl.NotActive = item.NotActive;
+                    mdl.Schedule = item.Schedule;
+                    mdl.Force = item.Force;
+                    mdl.DisplayName = item.DisplayName;
+                    if (db.Employees != null)
+                    {
+                        db.Employees.Add(mdl);
+                    }
+                }
+                var dthmodel = db.Dths.ToList();
+                foreach (var item in dthmodel)
+                {
+                    Dth mdl = new Dth();
+                    mdl.DthID = item.DthID;
+                    mdl.Employee = item.Employee;
+                    mdl.TimeCleared = item.TimeCleared;
+                    mdl.TimeEntered = item.TimeEntered;
+                    mdl.PositionID = item.PositionID;
+                    if (db.Dths != null)
+                    {
+                        db.Dths.Add(mdl);
+                    }
+                }
+                var scheduleModel = db.Schedules.ToList();
+                foreach (var item in scheduleModel)
+                {
+                    Schedule mdl = new Schedule();
+                    mdl.ScheduleID = item.ScheduleID;
+                    mdl.ScheduleTime = item.ScheduleTime;
+
+                    if (db.Schedules != null)
+                    {
+                        db.Schedules.Add(mdl);
+                    }
+                }
+
+                var lunchModel = db.Lunches.OrderBy(x => x.LunchTime);
+                foreach (var item in lunchModel)
+                {
+                    Lunch mdl = new Lunch();
+                    mdl.Employee = item.Employee;
+                    mdl.LunchID = item.LunchID;
+                    mdl.PositionID = item.PositionID;
+                    mdl.LunchTime = item.LunchTime;
+                    mdl.LongerLunch = item.LongerLunch;
+                    mdl.Double = item.Double;
+                    if (db.Lunches != null)
+                    {
+                        db.Lunches.Add(mdl);
+                    }
+                }
+                var positionModel = db.Positions.ToList();
+                foreach (var item in positionModel)
+                {
+                    Position mdl = new Position();
+                    mdl.PositionID = item.PositionID;
+                    mdl.PositionName = item.PositionName;
+                    if (db.Positions != null)
+                    {
+                        db.Positions.Add(mdl);
+                    }
+                }
+
+                ViewBag.EmployeesNames = db.Employees.Where(x => x.NotActive == false).OrderBy(x => x.DisplayName).ToList();
+                ViewBag.PositionNames = db.Positions.ToList();
+                ViewBag.ScheduleTimes = db.Schedules.OrderBy(x => x.ScheduleTime).ToList();
+                ViewBag.LunchTimes = db.Lunches.OrderBy(x => x.LunchTime).ToList();
+                ViewBag.positionOrdered = db.Positions.OrderBy(m => m.PositionName).ToList();
+                ViewBag.Dths = db.Dths.ToList();
+                ViewBag.Breaks = db.Breaks.ToList();
+                ViewBag.Lunches = db.Lunches.ToList();
+
+                string partialHtml = Common.RenderRazorViewToString(ControllerContext, "~/Views/Home/_DropDowns.cshtml");
+                return Json(new { success = true, html = partialHtml }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Json(false, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false });
             }
         }
 
@@ -409,7 +894,7 @@ namespace Seating.Controllers
                 {
 
                     if (lunchTime.LunchTime.ToShortDateString() == DateTime.Now.ToShortDateString() && lunchTime.LunchTime.ToShortTimeString() == time ||
-                        lunchTime.LunchTime.ToString("HH:mm") == time || lunchTime.LunchTime.ToString("M/d/yy HH:mm") == time)
+                        lunchTime.LunchTime.ToString("M/d/yy HH:mm") == time)
                     {
                         match = true;
                     }

@@ -306,6 +306,7 @@ C:\Users\Tyler\Desktop\Seating\bin\ru\Microsoft.CodeAnalysis.CSharp.resources.dl
 C:\Users\Tyler\Desktop\Seating\bin\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\Tyler\Desktop\Seating\bin\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\Tyler\Desktop\Seating\bin\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.csprojAssemblyReference.cache
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations.initial.resources
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations._0405.resources
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations.breakposition.resources
@@ -319,11 +320,10 @@ C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations.defaultlongerlunch.r
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations.positionnull.resources
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations.lunchList.resources
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations.dob.resources
+C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations.messages.resources
+C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations.msg.resources
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.csproj.GenerateResource.cache
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.csproj.CoreCompileInputs.cache
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.csproj.CopyComplete
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.dll
 C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.pdb
-C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations.messages.resources
-C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.Migrations.msg.resources
-C:\Users\Tyler\Desktop\Seating\obj\Debug\Seating.csprojAssemblyReference.cache
